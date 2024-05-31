@@ -11,8 +11,8 @@ namespace utils
 {
     public class Plugin : IPEPluginOption, IPEPlugin
     {
-        IPEPluginHost host;
-        Form1 form;
+        private IPEPluginHost host;
+        private Form1 form;
 
         //
         // IPEPluginOption
@@ -54,6 +54,10 @@ namespace utils
                 form.Show();
             }
         }
+
+        //
+        // Plugin
+        //
 
         public void RemoveTipBones()
         {
@@ -144,14 +148,14 @@ namespace utils
 
         private void SortMaterialByTextureInternal(IPXPmx pmx)
         {
-            var materilCount = pmx.Material.Count;
-            for(int i = 0; i < materilCount - 1; ++i)
+            var materialCount = pmx.Material.Count;
+            for(int i = 0; i < materialCount - 1; ++i)
             {
                 var material = pmx.Material[i];
                 var mat1 = pmx.Material[i + 1];
                 if(material.Tex != mat1.Tex)
                 {
-                    for(int j = i + 2; j < materilCount; ++j)
+                    for(int j = i + 2; j < materialCount; ++j)
                     {
                         var mat2 = pmx.Material[j];
                         if (material.Tex == mat2.Tex)
@@ -186,17 +190,17 @@ namespace utils
                 pmx.Bone.Remove(bone);
             }
 
+            host.Connector.Pmx.Update(pmx);
+            host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Vertex);
+            host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Bone);
+            host.Connector.View.PmxView.UpdateModel_Bone();
+
             var message = "";
             foreach (var item in replaceMap)
             {
                 message += item.Key.Name + " => " + item.Value.Name + "\r\n";
             }
             MessageBox.Show(message);
-
-            host.Connector.Pmx.Update(pmx);
-            host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Vertex);
-            host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Bone);
-            host.Connector.View.PmxView.UpdateModel_Bone();
         }
 
         private Dictionary<IPXBone, IPXBone> UnreferenceBones(IPXPmx pmx, IEnumerable<IPXBone> bones)
