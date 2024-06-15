@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace utils
+namespace ExportUtils
 {
     public partial class Form1 : Form
     {
@@ -17,29 +17,35 @@ namespace utils
         public Form1(Plugin plugin)
         {
             InitializeComponent();
+
             this.plugin = plugin;
 
-            FormClosed += Form1_FormClosed;
+            FormClosed += (o, e) =>
+            {
+                Hide();
+            };
         }
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void RemoveSelectedBonesButton_Click(object sender, EventArgs e)
         {
-            Hide();
+            plugin.RemoveSelectedBones();
         }
 
-        private void RemoveTipBonesButton_Click(object sender, EventArgs e)
+        private void RemoveUnweightedBonesButton_Click(object sender, EventArgs e)
         {
-            plugin.RemoveTipBones();
+            plugin.RemoveUnweightedBones();
         }
 
-        private void SortMaterialByTexButton_Click(object sender, EventArgs e)
+        private void SortMaterialByTextureButton_Click(object sender, EventArgs e)
         {
             plugin.SortMaterialByTexture();
         }
 
-        private void RemoveAndReplaceButton_Click(object sender, EventArgs e)
+        private void ReplaceTexturePathButton_Click(object sender, EventArgs e)
         {
-            plugin.RemoveAndReplaceBone();
+            var find = findText.Text;
+            var replace = replaceText.Text;
+            plugin.ReplaceTexturePath(find, replace);
         }
     }
 }
